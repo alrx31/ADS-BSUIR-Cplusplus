@@ -1,13 +1,18 @@
 #include <iostream>
 #include <cmath>
 using namespace std;
-struct Term {
-    int coefficient; 
-    int power;       
-    Term* next;      
+// класс одночлена многочлена
+class Term {
+public:
+    double coefficient; // коэффициент
+    int power;       // степень
+    Term* next;      // указатель на следующий одночлен
 };
 
+// Класс, представляющий многочлен как односвязный список одночленов
 class Polynomial {
+private:
+    Term* head;
 public:
     Polynomial() : head(nullptr) {}
     ~Polynomial() {
@@ -18,7 +23,9 @@ public:
             current = next;
         }
     }
-    void addTerm(int coefficient, int power) {
+
+    // Метод для добавления одночлена к текущему
+    void addTerm(double coefficient, int power) {
         Term* newTerm = new Term{ coefficient, power, nullptr };
         if (!head) {
             head = newTerm;
@@ -32,7 +39,8 @@ public:
         }
     }
 
-    bool isEqual(const Polynomial& other) const {
+    // Медод проверки эквивалентности
+    bool isEqual(Polynomial& other) {
         Term* current1 = head;
         Term* current2 = other.head;
         while (current1 && current2) {
@@ -45,7 +53,8 @@ public:
         return current1 == nullptr && current2 == nullptr;
     }
 
-    int meaning(int x) const {
+    // Медот вычесления значения в определенной точке
+    double Calc(int x)  {
         int result = 0;
         Term* current = head;
         while (current) {
@@ -55,53 +64,105 @@ public:
         return result;
     }
 
-    void add(const Polynomial& q, const Polynomial& r) {
+    // для нецелых чисел
+    double Calc(double x) {
+        int result = 0;
+        Term* current = head;
+        while (current) {
+            result += current->coefficient * pow(x, current->power);
+            current = current->next;
+        }
+        return result;
+    }
 
+    // метод для добавления к текущему
+    Polynomial add(Polynomial& q) {
+        Polynomial Result;
         Term* current1 = q.head;
-        Term* current2 = r.head;
+        Term* current2 = head;
         while (current1 || current2) {
             if (current1 && current2) {
                 if (current1->power == current2->power) {
-                    addTerm(current1->coefficient + current2->coefficient, current1->power);
+                    Result.addTerm(current1->coefficient + current2->coefficient, current1->power);
                     current1 = current1->next;
                     current2 = current2->next;
                 }
                 else if (current1->power > current2->power) {
-                    addTerm(current1->coefficient, current1->power);
+                    Result.addTerm(current1->coefficient, current1->power);
                     current1 = current1->next;
                 }
                 else {
-                    addTerm(current2->coefficient, current2->power);
+                    Result.addTerm(current2->coefficient, current2->power);
                     current2 = current2->next;
                 }
             }
             else if (current1) {
-                addTerm(current1->coefficient, current1->power);
+                Result.addTerm(current1->coefficient, current1->power);
                 current1 = current1->next;
             }
             else {
-                addTerm(current2->coefficient, current2->power);
+                Result.addTerm(current2->coefficient, current2->power);
                 current2 = current2->next;
             }
         }
+        return Result;
+
+
+    }
+    void Print() {
+        Term* current = head;
+        bool first = true;
+        while (current) {
+                if (first) {
+                    if (current->power == 0) {
+                        cout << current->coefficient << " ";
+                    }
+                    else if (current->power == 1) {
+                        cout << current->coefficient << "x ";
+                    }
+                    else {
+                        cout << current->coefficient << "x^" << current->power << " ";
+                    }
+                    first = false;
+                }
+                else if (current->coefficient > 0) {
+                    if (current->power == 0) {
+                        cout << "+ " << current->coefficient << " ";
+                    }
+                    else if (current->power == 1) {
+                        cout << "+ " << current->coefficient << "x ";
+                    }
+                    else {
+                        cout << "+ " << current->coefficient << "x^" << current->power << " ";
+                    }
+                }
+                else {
+                    if (current->power == 0) {
+                        cout << "- " << abs(current->coefficient) << " ";
+                    }
+                    else if (current->power == 1) {
+                        cout << "- " << abs(current->coefficient) << "x ";
+                    }
+                    else {
+                        cout << "- " << abs(current->coefficient) << "x^" << current->power << " ";
+                    }
+                }
+            current = current->next;
+        }
     }
 
-
-    Term* getHead() const {
+    Term* getHead() {
         return head;
     }
-
-private:
-    Term* head;
 };
 
 int main() {
-    setlocale(LC_ALL, "RU");
     Polynomial p;
     p.addTerm(-5, 6);
     p.addTerm(3, 2);
     p.addTerm(-1, 1);
     p.addTerm(7, 0);
+
 
 
     Polynomial q;
@@ -115,40 +176,21 @@ int main() {
     r.addTerm(1, 2);
     r.addTerm(-3, 1);
     r.addTerm(4, 0);
-    Term* current1 = p.getHead();
-    while (current1) {
-        cout << current1->coefficient << "x^" << current1->power << " ";
-        current1 = current1->next;
-    }
+
+
+    p.Print();
     cout << endl;
-    Term* current2 = q.getHead();
-    while (current2) {
-        cout << current2->coefficient << "x^" << current2->power << " ";
-        current2 = current2->next;
-    }
+    q.Print();
     cout << endl;
-    Term* current3 = r.getHead();
-    while (current3) {
-        cout << current3->coefficient << "x^" << current3->power << " ";
-        current3 = current3->next;
-    }
+    r.Print();
     cout << endl;
     cout << "p == q: " << (p.isEqual(q) ? "true" : "false") << endl;
 
 
-    cout << "�������� ���������� p � x=2: " << p.meaning(2) << endl;
+    cout << "The value of p where x=2: " << p.Calc(2) << endl;
+    cout << "The Summ of polynomials: \t";
 
-
-    p = Polynomial();
-    p.add(q, r);
-
-
-    cout << "����� ���������� q � r: ";
-    Term* current = p.getHead();
-    while (current) {
-        cout << current->coefficient << "x^" << current->power << " ";
-        current = current->next;
-    }
+    q.add(r).Print();
     cout << endl;
 
     return 0;
