@@ -1,2 +1,3 @@
 D:\BSUIR\АиСД\ЛР1\x64\Debug\ЛР1.exe
 D:\BSUIR\АиСД\ЛабыПЗ\ЛР1\x64\Debug\ЛР1.exe
+D:\BSUIR\ADS\ADS-BSUIR-Cplusplus\ЛР1\x64\Debug\ЛР1.exe

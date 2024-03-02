@@ -127,7 +127,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Tack4.cpp" />
     <ClCompile Include="Task2.cpp" />
+    <ClCompile Include="Task3.cpp" />
     <ClCompile Include="temp.cpp" />
     <ClCompile Include="ЛР1.cpp" />
   </ItemGroup>

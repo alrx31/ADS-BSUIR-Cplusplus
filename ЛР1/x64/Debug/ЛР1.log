@@ -1,4 +1,4 @@
-﻿  Task2.cpp
-D:\BSUIR\АиСД\ЛабыПЗ\ЛР1\Task2.cpp(55,44): warning C4244: +=: преобразование "double" в "int", возможна потеря данных
-ЛР1.obj : error LNK2005: main уже определен в Task2.obj
-D:\BSUIR\АиСД\ЛабыПЗ\ЛР1\x64\Debug\ЛР1.exe : fatal error LNK1169: обнаружен многократно определенный символ - один или более
+﻿  Tack4.cpp
+D:\BSUIR\ADS\ADS-BSUIR-Cplusplus\ЛР1\Tack4.cpp(241,12): warning C4305: аргумент: усечение из "__int64" в "int"
+D:\BSUIR\ADS\ADS-BSUIR-Cplusplus\ЛР1\Tack4.cpp(241,12): warning C4309: аргумент: усечение константного значения
+  ЛР1.vcxproj -> D:\BSUIR\ADS\ADS-BSUIR-Cplusplus\ЛР1\x64\Debug\ЛР1.exe
