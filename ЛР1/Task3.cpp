@@ -2,7 +2,6 @@
 //
 //using namespace std;
 //
-//// linked list (ring ) in one direction with a tail and a head and Data type int
 //
 //class LinkedList {
 //	class Node {
@@ -65,7 +64,6 @@
 //	}
 //
 //
-//	// delete element by index
 //
 //	void remove(int index) {
 //		if (index < 0 || index >= size) {
@@ -90,20 +88,23 @@
 //	}
 //
 //
-//	int getLastAfterDeleteEveryK(int k) {
+//	int* getLastAfterDeleteEveryK(int k) {
 //		Node* current = head;
 //		Node* prev = tail;
+//		int sizex = 0;
+//		int* arr = new int[64];
 //		while (size > 1) {
-//			for (int i = 0; i < k; i++) {
+//			for (int i = 0; i < k-1; i++) {
 //				prev = current;
 //				current = current->getNext();
 //			}
-//			prev->setNext(current->getNext());
-//			delete current;
-//			current = prev->getNext();
+//			arr[sizex++] = current->getData();
+//			current = current->getNext();
+//			prev->setNext(current);
 //			size--;
 //		}
-//		return current->getData();
+//		arr[sizex] = current->getData();
+//		return arr;
 //	}
 //
 //
@@ -121,14 +122,21 @@
 //
 //
 //
-//	// table
 //	for (int i = 1; i <= 64; i++) {
 //		LinkedList list;
 //		for (int j = 1; j <= 64; j++) {
 //			list.push(j);
 //		}
 //
-//		cout << "N = \t" << i << " \t:\t " << list.getLastAfterDeleteEveryK(i) << endl;
+//		int* arr = list.getLastAfterDeleteEveryK(i);
+//		cout << "N:\t" << i << "\t:\t" << arr[63] << endl;
+//		for (int k = 0; k < 64; k++) {
+//			cout << arr[k] << " ";
+//		}
+//		cout << endl;
+//		delete arr;
+//
+//
 //	}
 //
 //

@@ -143,7 +143,7 @@
 //
 //    void Print(){
 //        Node* current = head;
-//        while (current->getNext()) {
+//        while (current) {
 //            cout << current->getName() << " : " << current->getPhone() << endl;
 //
 //            current = current->getNext();
@@ -177,7 +177,7 @@
 //    return arr;
 //}
 //
-//int main1() {
+//int main() {
 //
 //
 //
