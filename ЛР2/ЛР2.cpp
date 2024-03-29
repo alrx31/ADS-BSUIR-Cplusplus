@@ -128,18 +128,45 @@ public:
         return size;
     }
 
-    void sort() {
-        Node* temp = Head;
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size - 1 - i; j++) {
-                if (temp->getV() > temp->getNext()->getV()) {
-                    Node* temp1 = temp;
-                    temp = temp->getNext();
-                    temp->setNext(temp1);
-                }
-                temp = temp->getNext();
+    void swapIFNaC(Node* prev, Node* curr, Node* next, Node* H) {
+        if (curr != nullptr && next != nullptr && curr->getV() < next->getV()) {
+            if (prev == nullptr) {
+                Node* temp = curr;
+                curr->setNext(next->getNext());
+                next->setNext(temp);
+                Head = next;
+            }
+            else {
+                Node* temp = curr;
+                prev->setNext(curr->getNext());
+                temp->setNext(temp->getNext()->getNext());
+                prev->getNext()->setNext(temp);
             }
         }
+        else {
+            return;
+        }
+
+    }
+
+    void sort() {
+        if (Head == nullptr) return;
+        Node* prev;
+        Node* curr;
+
+        for (int i = 0; i < size; i++) {
+            prev = nullptr;
+            curr = Head;
+
+            for (int j = 0; j < size; j++) {
+                if (curr == nullptr) break;
+                swapIFNaC(prev, curr, curr->getNext(), Head);
+                prev = curr;
+                curr = curr->getNext();
+            }
+        }
+
+
     }
 };
 
@@ -242,6 +269,7 @@ int main() {
     HashTable ht(20);
     ht.put("a", 4);
     ht.put("b", 5);
+    ht.put("a", 6);
     ht.putToElem("c", 3, "a");
     ht.putToElem("d", 6, "c");
     ht.putToElem("e", 2, "a");
