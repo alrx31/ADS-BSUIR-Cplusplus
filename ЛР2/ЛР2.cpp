@@ -6,15 +6,17 @@ using namespace std;
 class Node {
 private:
     string K;
-    int V;
+    int *V;
+    int size_v;
+
     Node* Next;
     int size_c;
     Node** arr;
-
 public:
     Node() {
         this->K = "";
-        this->V = 0;
+        this->size_v = 0;
+        this->V = new int[size_v+1];
         this->Next = nullptr;
         this->size_c = 0;
         this->arr = new Node * [size_c + 1]();
@@ -22,7 +24,9 @@ public:
 
     Node(string K, int V) {
         this->K = K;
-        this->V = V;
+        this->size_v = 0;
+        this->V = new int[size_v + 1];
+        this->V[size_v++] = V;
         this->Next = nullptr;
         this->size_c = 0;
         this->arr = new Node * [size_c + 1]();
@@ -33,7 +37,11 @@ public:
     }
 
     void print() {
-        cout << this->K << " : " << this->V << endl;
+        cout << this->K << " : ";
+        for (int i = 0; i < size_v; i++) {
+			cout << this->V[i] << " ";
+		}
+        cout << endl;
         if (size_c > 1) cout << "==========" << endl;
         for (int i = 0; i < size_c; i++) {
             cout << "\t";
@@ -50,7 +58,7 @@ public:
         return K;
     }
 
-    int getV() const {
+    int* getV() const {
         return V;
     }
 
@@ -66,20 +74,37 @@ public:
         Node** temp = new Node * [size_c + 1];
         for (int i = 0; i < size_c; i++) {
             temp[i] = arr[i];
+            if (temp[i]->getK() == K) {
+                temp[i]->pushEl(V);
+                return;
+            }
         }
+
         arr = new Node * [size_c + 1];
         for (int i = 0; i < size_c; i++) {
             arr[i] = temp[i];
         }
+
         arr[size_c] = new Node(K, V);
         size_c++;
     }
 
     void SortNodes() {
+        // sort numbers
+        for (int i = 0; i < this->size_v; i++) {
+            for (int j = 0; j < this->size_v - i - 1; j++) {
+                if (this->V[j] > this->V[j + 1]) {
+                    int temp = this->V[j];
+                    this->V[j] = this->V[j + 1];
+                    this->V[j + 1] = temp;
+                }
+            }
+        }
+        // sort childs
         for (int i = 0; i < size_c; i++) {
             this->arr[i]->SortNodes();
             for (int j = 0; j < size_c - 1 - i; j++) {
-                if (arr[j]->getV() > arr[j + 1]->getV()) {
+                if (arr[j]->getV()[0] > arr[j + 1]->getV()[0]) {
                     Node* temp = arr[j];
                     arr[j] = arr[j + 1];
                     arr[j + 1] = temp;
@@ -87,108 +112,55 @@ public:
             }
         }
     }
-};
-
-class LinkedList {
-private:
-    Node* Head;
-    int size;
-
-public:
-    LinkedList() {
-        this->Head = nullptr;
-        this->size = 0;
-    }
-
-    void push(string K, int V) {
-        Node* newNode = new Node(K, V);
-        if (this->Head == nullptr) {
-            this->Head = newNode;
-        }
-        else {
-            newNode->setNext(Head);
-            Head = newNode;
-        }
-        size++;
-    }
-
-    void print() {
-        Node* temp = Head;
-        while (temp != nullptr) {
-            temp->print();
-            temp = temp->getNext();
-        }
-    }
-
-    Node* getHead() const {
-        return Head;
-    }
-
-    int getSize() const {
-        return size;
-    }
-
-    void swapIFNaC(Node* prev, Node* curr, Node* next, Node* H) {
-        if (curr != nullptr && next != nullptr && curr->getV() < next->getV()) {
-            if (prev == nullptr) {
-                Node* temp = curr;
-                curr->setNext(next->getNext());
-                next->setNext(temp);
-                Head = next;
-            }
-            else {
-                Node* temp = curr;
-                prev->setNext(curr->getNext());
-                temp->setNext(temp->getNext()->getNext());
-                prev->getNext()->setNext(temp);
+    void SortNodes(int r) {
+        // sort numbers
+        for (int i = 0; i < this->size_v; i++) {
+            for (int j = 0; j < this->size_v - i - 1; j++) {
+                if (this->V[j] > this->V[j + 1]) {
+                    int temp = this->V[j];
+                    this->V[j] = this->V[j + 1];
+                    this->V[j + 1] = temp;
+                }
             }
         }
-        else {
-            return;
-        }
-
-    }
-
-    void sort() {
-        if (Head == nullptr) return;
-        Node* prev;
-        Node* curr;
-
-        for (int i = 0; i < size; i++) {
-            prev = nullptr;
-            curr = Head;
-
-            for (int j = 0; j < size; j++) {
-                if (curr == nullptr) break;
-                swapIFNaC(prev, curr, curr->getNext(), Head);
-                prev = curr;
-                curr = curr->getNext();
+        // sort childs
+        for (int i = 0; i < size_c; i++) {
+            this->arr[i]->SortNodes(1);
+            for (int j = 0; j < size_c - 1 - i; j++) {
+                if (arr[j]->getK().compare(arr[j + 1]->getK()) >0) {
+                    Node* temp = arr[j];
+                    arr[j] = arr[j + 1];
+                    arr[j + 1] = temp;
+                }
             }
         }
+    }
+    
 
-
+    void pushEl(int V) {
+        this->V[this->size_v++] = V;
     }
 };
 
 class HashTable {
 private:
-    LinkedList** table;
+    Node** table;
     int size;
 
 public:
     HashTable() {
         this->size = 10;
-        this->table = new LinkedList * [size]();
+        this->table = new Node * [size];
         for (int i = 0; i < size; i++) {
-            table[i] = new LinkedList();
+            table[i] = new Node();
         }
     }
 
     HashTable(int size) {
         this->size = size;
-        this->table = new LinkedList * [size]();
+        this->table = new Node * [size];
         for (int i = 0; i < size; i++) {
-            table[i] = new LinkedList();
+            table[i] = new Node();
         }
     }
 
@@ -200,36 +172,35 @@ public:
         return hash % size;
     }
 
-    void put(const string& key, int value) {
+    void put(string key, int value) {
         int hash = this->hash(key);
-        if (table[hash] == nullptr) {
-            table[hash] = new LinkedList();
+        if (table[hash]->getK() == "") {
+            table[hash] = new Node(key,value);
+            return;
         }
-        table[hash]->push(key, value);
+        table[hash]->pushEl(value);
     }
 
-    void putToElem(const string& K, int V, const string& K_p) {
+    void putToElem(string K, int V, string K_p) {
         Node* parent = getNode(K_p);
         if (parent == nullptr) return;
-        parent->push(K, V);
+        parent->push(K,V);
     }
 
-    Node* getNode(const string& K) {
+    Node* getNode(string K) {
         Node* res = nullptr;
+        
         for (int i = 0; i < size; i++) {
-            if (table[i] != nullptr) {
-                Node* curr = table[i]->getHead();
-                for (int j = 0; j < table[i]->getSize(); j++) {
-                    res = get(curr, K);
-                    if (res->getK() == K) return res;
-                    curr = curr->getNext();
-                }
+            if (this->table[i]->getK() != "") {
+                res = get(this->table[i], K);
+                if (res->getK() == K) return res;
             }
+
         }
         return res;
     }
 
-    Node* get(Node* node, const string& K) {
+    Node* get(Node* node, string K) {
         if (node->getK() == "") return nullptr;
         if (node->getK() == K) return node;
         for (int i = 0; i < node->getSize(); i++) {
@@ -241,26 +212,24 @@ public:
 
     void print() {
         for (int i = 0; i < size; i++) {
-            if (table[i] != nullptr) {
+            if (table[i]->getK() != "") {
                 table[i]->print();
             }
         }
     }
 
-    void print(const string& K) {
+    void print( string K) {
         getNode(K)->print();
     }
 
     void sortNodes() {
         for (int i = 0; i < size; i++) {
-            if (table[i]->getHead() != nullptr) {
-                table[i]->sort();
-                Node* temp = table[i]->getHead();
-                for (int j = 0; j < table[i]->getSize(); j++) {
-                    temp->SortNodes();
-                    temp = temp->getNext();
-                }
-            }
+            table[i]->SortNodes();
+        }
+    }
+    void sortNodes(int r) {
+        for (int i = 0; i < size; i++) {
+            table[i]->SortNodes(r);
         }
     }
 };
@@ -269,8 +238,9 @@ int main() {
     HashTable ht(20);
     ht.put("a", 4);
     ht.put("b", 5);
-    ht.put("a", 6);
+    ht.put("a", 2);
     ht.putToElem("c", 3, "a");
+    ht.putToElem("c", 2, "a");
     ht.putToElem("d", 6, "c");
     ht.putToElem("e", 2, "a");
     ht.putToElem("f", 1, "c");
@@ -279,6 +249,9 @@ int main() {
     cout << endl;
     ht.sortNodes();
     cout << endl;
+    ht.print();
+    cout << endl << endl;
+    ht.sortNodes(1);
     ht.print();
 
     return 0;
