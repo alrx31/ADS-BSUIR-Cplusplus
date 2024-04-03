@@ -32,9 +32,24 @@ public:
         this->arr = new Node * [size_c + 1]();
     }
 
+    void remove() {
+        K = "";
+        size_v = 0;
+        V = new int[size_v];
+
+        Next = nullptr;
+        for (int i = 0; i < size_c; i++) {
+            arr[i]->remove();
+        }
+        size_c = 0;
+        arr = new Node * [size_c];
+    }
     void setNext(Node* Next) {
         this->Next = Next;
     }
+    int getVsize() {
+		return size_v;
+	}
 
     void print() {
         cout << this->K << " : ";
@@ -44,8 +59,10 @@ public:
         cout << endl;
         if (size_c > 1) cout << "==========" << endl;
         for (int i = 0; i < size_c; i++) {
-            cout << "\t";
-            arr[i]->print();
+            if (arr[i]->getK() != "") {
+                cout << "\t";
+                arr[i]->print();
+            }
         }
         if (size_c > 1) cout << "----------" << endl;
     }
@@ -53,20 +70,19 @@ public:
     Node* getNext() {
         return Next;
     }
-
-    string getK() const {
+    string getK()  {
         return K;
     }
 
-    int* getV() const {
+    int* getV()  {
         return V;
     }
 
-    int getSize() const {
+    int getSize()  {
         return size_c;
     }
 
-    Node** getArr() const {
+    Node** getArr()  {
         return arr;
     }
 
@@ -140,6 +156,12 @@ public:
     void pushEl(int V) {
         this->V[this->size_v++] = V;
     }
+    void IncreaseSize() {
+		this->size_v++;
+	}
+    void DecreaseSize() {
+        this->size_c--;
+    }
 };
 
 class HashTable {
@@ -211,8 +233,8 @@ public:
     }
 
     void print() {
-        for (int i = 0; i < size; i++) {
-            if (table[i]->getK() != "") {
+        for (int i = 16; i < size; i++) {
+            if (table[i] != nullptr && table[i]->getK() != "" && table[i]->getVsize() != 0) {
                 table[i]->print();
             }
         }
@@ -232,26 +254,54 @@ public:
             table[i]->SortNodes(r);
         }
     }
+
+    void Delete(string K) {
+        for (int i = 16; i < size; i++) {
+            if (table[i]->getK() != "") {
+                if (table[i]->getK() == K) {
+					table[i]->remove();
+					return;
+				}
+				int res = Delete(table[i], K);
+			    if (res == 1) return;
+            }
+        }
+    }
+    int Delete(Node* node, string K) {
+        if (node->getK() == K) {
+            node->remove();
+			return 1;
+		}
+        for (int i = 0; i < node->getSize(); i++) {
+            Delete(node->getArr()[i], K);
+        }
+        return 0;
+    }
+
 };
 
 int main() {
     HashTable ht(20);
-    ht.put("a", 4);
     ht.put("b", 5);
+    ht.put("a", 4);
     ht.put("a", 2);
-    ht.putToElem("c", 3, "a");
-    ht.putToElem("c", 2, "a");
+    ht.putToElem("c", 3, "b");
+    ht.putToElem("c", 2, "b");
     ht.putToElem("d", 6, "c");
-    ht.putToElem("e", 2, "a");
+    ht.putToElem("e", 2, "b");
     ht.putToElem("f", 1, "c");
 
-    ht.print();
+    /*ht.print();
     cout << endl;
     ht.sortNodes();
     cout << endl;
     ht.print();
     cout << endl << endl;
-    ht.sortNodes(1);
+    ht.sortNodes(1);*/
+    ht.print();
+
+    ht.Delete("f");
+    cout << endl;
     ht.print();
 
     return 0;
