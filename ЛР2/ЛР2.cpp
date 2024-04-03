@@ -300,7 +300,7 @@ int main() {
     ht.sortNodes(1);*/
     ht.print();
 
-    ht.Delete("f");
+    ht.Delete("c");
     cout << endl;
     ht.print();
 
