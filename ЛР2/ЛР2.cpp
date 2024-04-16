@@ -316,6 +316,7 @@ int main() {
     ht.putToElem("a", 1, "c");
     ht.putToElem("aaaaaaaaaa", 2, "c");
     ht.print();
+    cout << "\n";
     ht.sortNodes(true);
     ht.print();
     return 0;
