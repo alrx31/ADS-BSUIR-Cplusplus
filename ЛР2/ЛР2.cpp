@@ -184,6 +184,7 @@ private:
     Node** table;
     int size;
 
+    int index;
 public:
     HashTable() {
         this->size = 10;
@@ -191,6 +192,7 @@ public:
         for (int i = 0; i < size; i++) {
             table[i] = new Node();
         }
+        this->index = 0;
     }
 
     HashTable(int size) {
@@ -210,12 +212,15 @@ public:
     }
 
     void put(string key, int value) {
-        int hash = this->hash(key);
+        /*int hash = this->hash(key);
         if (table[hash]->getK() == "") {
             table[hash] = new Node(key, value);
             return;
         }
-        table[hash]->pushEl(key, value);
+        table[hash]->pushEl(key, value);*/
+        if(index == size) return;
+
+        table[index++] = new Node(key,value);
     }
 
     void putToElem(string K, int V, string K_p) {
@@ -267,14 +272,17 @@ public:
 
     void sortNodes(bool key = false) {
         if (!key) {
+
             for (int i = 0; i < size; i++) {
                 table[i]->SortNodes();
             }
+            BubleSort();
         }
         else {
             for (int i = 0; i < size; i++) {
                 table[i]->SortNodes(key);
             }
+            BubleSort(true);
         }
     }
 
@@ -290,6 +298,33 @@ public:
             }
         }
     }
+
+    
+    // sort the table array like array
+    void BubleSort(bool sort = false) {
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size - 1; j++) {
+                if (sort) {
+                    if (table[j]->getK().compare(table[j + 1]->getK()) > 0) {
+                        Node* temp = table[j];
+                        table[j] = table[j + 1];
+                        table[j + 1] = temp;
+                    }
+                }
+                else {
+                    if (table[j]->getV()[0] > table[j + 1]->getV()[0]) {
+                        Node* temp = table[j];
+                        table[j] = table[j + 1];
+                        table[j + 1] = temp;
+                    }
+                }
+            }
+        }
+    }
+
+
+
+
     int Delete(Node* node, string K) {
         if (node->getK() == K) {
             node->remove();
@@ -316,8 +351,9 @@ int main() {
     ht.putToElem("a", 1, "c");
     ht.putToElem("aaaaaaaaaa", 2, "c");
     ht.print();
-    cout << "\n";
+    cout << endl<< endl;
     ht.sortNodes(true);
+    cout << endl << endl;
     ht.print();
     return 0;
 }
