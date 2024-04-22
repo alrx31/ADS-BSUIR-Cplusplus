@@ -1,5 +1,5 @@
 ﻿#include <iostream>
-
+#include <string>
 using namespace std;
 
 int outPrioryty(char c) {
@@ -28,8 +28,6 @@ int inPrioryty(char c) {
 	}
 	return -1;
 }
-
-
 
 
 class Stack {
@@ -129,7 +127,10 @@ string getIPN(string inf_n) {
 
 
 int main() {
-	Stack stack;
 	cout << getIPN("(a + b)*c^n^y") << endl;
+	cout << "enter the expression: ";
+	string str;
+	getline(cin, str);
+	cout << getIPN(str) << endl;
 
 }
