@@ -299,6 +299,16 @@ public:
         }
     }
 
+    int Delete(Node* node, string K) {
+        if (node->getK() == K) {
+            node->remove();
+            return 1;
+        }
+        for (int i = 0; i < node->getSize(); i++) {
+            Delete(node->getArr()[i], K);
+        }
+        return 0;
+    }
     
     // sort the table array like array
     void BubleSort(bool sort = false) {
@@ -322,21 +332,41 @@ public:
         }
     }
 
+    void findTermsByParent(string K) {
+        for (int i = 0; i < size; i++) {
+            findTermsByParent(table[i], K);
+        }
 
-
-
-    int Delete(Node* node, string K) {
+    }
+    void findTermsByParent(Node* node, string K) {
         if (node->getK() == K) {
-            node->remove();
-            return 1;
+			cout << endl<<node->getK() << " ";
+            for (int i = 0; i < node->getSize(); i++) {
+                cout << node->getArr()[i]->getK() << " ";
+            }
         }
         for (int i = 0; i < node->getSize(); i++) {
-            Delete(node->getArr()[i], K);
+			findTermsByParent(node->getArr()[i], K);
+		}
+    }
+    void findTermsBySubterm(string subterm) {
+        for (int i = 0; i < size; i++) {
+            findTermsBySubterm(table[i], subterm);
         }
-        return 0;
+    }
+
+    void findTermsBySubterm(Node* node, string subterm) {
+        
+        for (int i = 0; i < node->getSize(); i++) {
+            if (node->getArr()[i]->getK() == subterm) {
+                cout << node->getK() << " ";
+            }
+            findTermsBySubterm(node->getArr()[i], subterm);
+        }
     }
 
 };
+
 
 int main() {
     HashTable ht(20);
@@ -349,11 +379,89 @@ int main() {
     ht.putToElem("e", 2, "b");
     ht.putToElem("f", 1, "c");
     ht.putToElem("a", 1, "c");
+    ht.putToElem("c", 1, "f");
+    ht.putToElem("c", 14, "b");
+
     ht.putToElem("aaaaaaaaaa", 2, "c");
+    ht.putToElem("fdsf", 12, "aaaaaaaaaa");
+    ht.putToElem("rt", 24, "aaaaaaaaaa");
     ht.print();
     cout << endl<< endl;
+    while (true) {
+        cout << endl<<"1 - sort by numbers" << endl << "2 - sort by alphabet" << endl << "3 - find by parent" << endl << "4 - find by subterm" << endl << "5 - delete" <<endl << "6 - add term"<< endl << "7 - add term to term" << endl;
+        int key;
+        cin >> key;
+        system("cls");
+        ht.print();
+        cout << endl << endl;
+        if (key == 1) {
+			ht.sortNodes();
+			ht.print();
+		}
+        else if (key == 2) {
+			ht.sortNodes(true);
+			ht.print();
+		}
+        else if (key == 3) {
+			string K;
+			cout << "Enter parent: ";
+			cin >> K;
+			ht.findTermsByParent(K);
+		}
+        else if (key == 4) {
+			string K;
+			cout << "Enter subterm: ";
+			cin >> K;
+			ht.findTermsBySubterm(K);
+		}
+        else if (key == 5) {
+			string K;
+			cout << "Enter term: ";
+			cin >> K;
+			ht.Delete(K);
+			ht.print();
+        }
+        else if (key == 6) {
+            			string K;
+			int V;
+			cout << "Enter term: ";
+			cin >> K;
+			cout << "Enter value: ";
+			cin >> V;
+			ht.put(K, V);
+			ht.print();
+		}
+        else if (key == 7) {
+			string K;
+			int V;
+			string K_p;
+			cout << "Enter term: ";
+			cin >> K;
+			cout << "Enter value: ";
+			cin >> V;
+			cout << "Enter parent: ";
+			cin >> K_p;
+			ht.putToElem(K, V, K_p);
+			ht.print();
+        }
+
+    }
+
+    // true - alphabet sort, false - number sort
+    /*ht.sortNodes();
+    cout << endl << endl;
+    ht.print();
     ht.sortNodes(true);
     cout << endl << endl;
     ht.print();
+    cout << endl << endl;
+    cout << endl << "Parent: c" << endl << "Children:" << endl;
+    ht.findTermsByParent("b");
+    cout << endl << endl;
+    cout << endl << "Subterm: c" << endl << "Parents:";
+    ht.findTermsBySubterm("c");
+    cout << endl;*/
     return 0;
+
+
 }
