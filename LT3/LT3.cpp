@@ -85,7 +85,10 @@ int getRank(string str) {
 
 string getIPN(string inf_n) {
 	int rank = getRank(inf_n);
-	if(rank != 1) cerr << "Incorrect input";
+	if (rank != 1) {
+		cerr << "Incorrect input";
+		return "";
+	};
 	Stack stack;
 	string ipn = "";
 	string stHead = "";
@@ -128,9 +131,11 @@ string getIPN(string inf_n) {
 
 int main() {
 	cout << getIPN("(a + b)*c^n^y") << endl;
-	cout << "enter the expression: ";
-	string str;
-	getline(cin, str);
-	cout << getIPN(str) << endl;
+	while (true) {
+		cout << "enter the expression: ";
+		string str;
+		getline(cin, str);
+		cout << getIPN(str) << endl;
+	}
 
 }
